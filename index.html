@@ -1,15 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Message App</title>
-</head>
-<body>
-    <div id="app"></div>
+  </head>
+  <body>
+    <div id="app">
+      <ul>
+        <li v-for="message in messages">
+          {{ message.text }} - {{ message.createdAt }}
+        </li>
+        <form v-on:submit.prevent="addMessage">
+          <textarea v-model="newMessage" placeholder="Leave a message" />
+          <div>
+            <button type="submit">Add</button>
+          </div>
+        </form>
+      </ul>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
-        let vm = new Vue({
-            el : '#app'
-        });
+      let vm = new Vue({
+        el: "#app",
+        data: {
+          messages: [],
+          newMessage: "",
+        },
+        methods : {
+            addMessage (event) {
+                if(!this.newMessage) return; 
+                
+                this.messages.push({
+                    text : this.newMessage,
+                    createAt : new Date()
+                });
+
+                this.newMessage = '';
+            }
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
