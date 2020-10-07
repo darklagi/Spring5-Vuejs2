@@ -2,41 +2,76 @@
 <html>
   <head>
     <title>Message App</title>
+    <style>
+      [v-cloak] {display: none;}
+      body > div {width: 500px; margin: 0 auto;}
+      textarea {width: 100%;}
+      ul {padding: 0 15px;}
+    </style>
   </head>
   <body>
-    <div id="app">
+    <div id="app" v-cloak>
+      <message-list :items="messages" @delete="deleteMessage"></message-list>
       <ul>
-        <li v-for="message in messages">
-          {{ message.text }} - {{ message.createdAt }}
-        </li>
         <form v-on:submit.prevent="addMessage">
-          <textarea v-model="newMessage" placeholder="Leave a message" />
+          <textarea
+            v-focus
+            v-model="newMessage"
+            placeholder="Leave a message"
+          ></textarea>
           <div>
-            <button type="submit">Add</button>
+            <button v-bind:disabled="addDisabled"
+              type="submit">Add</button>
           </div>
         </form>
       </ul>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script>
+    <script src="http://cdn.date-fns.org/v1.9.0/date_fns.min.js"></script>
+    <script type="module">
+      import MessageList from './components/MessageList.js'
+      import './directives/focus.directive.js'
+      import './filters/datetime.filter.js'
+      import lifecycleLogger from './mixins/lifecycle-logger.mixin.js'
+      import lifecycleLoggerPlugin from './plugins/lifecycle-logger.plugin.js'
+    
+      Vue.use(lifecycleLoggerPlugin, {beforeMount : false});
+
       let vm = new Vue({
         el: "#app",
+        name : 'MessageApp',
+        mixins : [lifecycleLogger],
         data: {
           messages: [],
           newMessage: "",
         },
-        methods : {
-            addMessage (event) {
-                if(!this.newMessage) return; 
-                
-                this.messages.push({
-                    text : this.newMessage,
-                    createAt : new Date()
-                });
+        computed : {
+          addDisabled () {
+            return this.messages.length >= 10 || this.newMessage.length > 50;
+          }
+        },
+        components : {
+          MessageList
+        },
+        methods: {
+          addMessage(event) {
+            if (!this.newMessage) return;
 
-                this.newMessage = '';
-            }
-        }
+            let now = new Date();
+            this.messages.push({
+              id : now.getTime(),
+              text: this.newMessage,
+              createdAt: now
+            });
+
+            this.newMessage = "";
+          },
+
+          deleteMessage(message) {
+             debugger
+            this.messages.splice(this.messages.indexOf(message), 1);
+          }
+        },
       });
     </script>
   </body>
