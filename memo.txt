@@ -1,0 +1,17 @@
+프로그램 설치
+- 크롬
+- VS Code
+- nodejs
+- vuejs devtools (크롬 확장프로그램)
+- git
+
+VS Code 플로그인 설치
+- Vetur
+- Night Owl (테마)
+- Material Icon Theme (파일아이콘)
+- Live Server (라이브서버)
+- ESLint
+- Prettier (코드 포맷터)
+- Auto Close Tag (태그닫기 자동생성)
+- Atom Keymap
+- Korean Language Pack (VSCode 한글화)
